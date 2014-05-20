@@ -145,6 +145,13 @@ void GCode::goToHome()
     motionOccurred = false;
 }
 
+void GCode::sendGrblHoming()
+{
+    sendGcodeLocal(SET_UNLOCK_STATE_V08c);
+    sendGcodeLocal(SET_HOMING);
+}
+
+
 // Slot called from other threads (i.e. main window, grbl dialog, etc.)
 void GCode::sendGcode(QString line)
 {

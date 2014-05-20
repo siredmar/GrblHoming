@@ -104,6 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->verticalSliderZJog,SIGNAL(sliderReleased()),this,SLOT(zJogSliderReleased()));
     connect(ui->pushButtonRefreshPos,SIGNAL(clicked()),this,SLOT(refreshPosition()));
     connect(ui->comboStep,SIGNAL(currentIndexChanged(QString)),this,SLOT(comboStepChanged(QString)));
+    connect(ui->btnHomingGrbl,SIGNAL(clicked()),this,SLOT(grblHoming()));
 
     connect(this, SIGNAL(sendFile(QString)), &gcode, SLOT(sendFile(QString)));
     connect(this, SIGNAL(openPort(QString,QString)), &gcode, SLOT(openPort(QString,QString)));
@@ -121,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(sendGrblUnlock()), &gcode, SLOT(sendGrblUnlock()));
     connect(this, SIGNAL(goToHome()), &gcode, SLOT(goToHome()));
     connect(this, SIGNAL(setItems(QList<PosItem>)), ui->wgtVisualizer, SLOT(setItems(QList<PosItem>)));
+    connect(this, SIGNAL(sendGrblHoming()), &gcode, SLOT(sendGrblHoming()));
     
     connect(&gcode, SIGNAL(sendMsg(QString)),this,SLOT(receiveMsg(QString)));
     connect(&gcode, SIGNAL(portIsClosed(bool)), this, SLOT(portIsClosed(bool)));
@@ -248,6 +250,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
     ui->pushButtonRefreshPos->setEnabled(false);
+    ui->btnHomingGrbl->setEnabled(false);
     styleSheet = ui->btnOpenPort->styleSheet();
     ui->statusList->setEnabled(true);
     ui->openFile->setEnabled(true);
@@ -345,6 +348,7 @@ void MainWindow::begin()
         ui->btnSetHome->setEnabled(false);
         ui->btnGoHomeSafe->setEnabled(false);
         ui->pushButtonRefreshPos->setEnabled(false);
+        ui->btnHomingGrbl->setEnabled(false);
         emit sendFile(ui->filePath->text());
     }
 }
@@ -362,6 +366,7 @@ void MainWindow::stop()
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
     ui->pushButtonRefreshPos->setEnabled(true);
+    ui->btnHomingGrbl->setEnabled(true);
 }
 
 void MainWindow::grblReset()
@@ -374,6 +379,11 @@ void MainWindow::grblReset()
 void MainWindow::grblUnlock()
 {
     emit sendGrblUnlock();
+}
+
+void MainWindow::grblHoming()
+{
+    emit sendGrblHoming();
 }
 
 void MainWindow::goHomeSafe()
@@ -408,6 +418,7 @@ void MainWindow::stopSending()
     ui->btnGoHomeSafe->setEnabled(true);
     ui->pushButtonRefreshPos->setEnabled(true);
     ui->openFile->setEnabled(true);
+    ui->btnHomingGrbl->setEnabled(true);
 }
 
 // User has asked to open the port
@@ -509,6 +520,7 @@ void MainWindow::portIsClosed(bool reopen)
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
     ui->pushButtonRefreshPos->setEnabled(false);
+    ui->btnHomingGrbl->setEnabled(false);
 
     if (reopen)
     {
@@ -550,6 +562,7 @@ void MainWindow::adjustedAxis()
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
     ui->pushButtonRefreshPos->setEnabled(true);
+    ui->btnHomingGrbl->setEnabled(true);
 }
 
 void MainWindow::disableAllButtons()
@@ -572,6 +585,7 @@ void MainWindow::disableAllButtons()
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
     ui->pushButtonRefreshPos->setEnabled(false);
+    ui->btnHomingGrbl->setEnabled(false);
 }
 
 void MainWindow::enableGrblDialogButton()
@@ -595,6 +609,7 @@ void MainWindow::enableGrblDialogButton()
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
+    ui->btnHomingGrbl->setEnabled(true);
     ui->pushButtonRefreshPos->setEnabled(true);
 
     if (ui->filePath->text().length() > 0)
@@ -662,7 +677,6 @@ void MainWindow::decZ()
 void MainWindow::decFourth()
 {
 /// LETARTARE 25-04-2014
-/*  May 20, 2014 : removing this absurd limit  !
 	char four = controlParams.fourthAxisType;
 	if (four == FOURTH_AXIS_A || four == FOURTH_AXIS_B || four == FOURTH_AXIS_C) {
 		float actual_position = ui->lcdWorkNumberFourth->value() ;
@@ -676,15 +690,15 @@ void MainWindow::decFourth()
 		}
 	}
 /// <--
-	else  
-*/
+	else  {
 		disableAllButtons();
-		emit axisAdj(controlParams.fourthAxisType, -jogStep, invFourth, absoluteAfterAxisAdj, 0);	
+		emit axisAdj(controlParams.fourthAxisType, -jogStep, invFourth, absoluteAfterAxisAdj, 0);
+	}
+
 }
 void MainWindow::incFourth()
 {
 /// LETARTARE 25-04-2014
-/*  May 20, 2014 : removing this absurd limit  !
 	char four = controlParams.fourthAxisType;
 	if (four == FOURTH_AXIS_A || four == FOURTH_AXIS_B || four == FOURTH_AXIS_C) {
 		float actual_position = ui->lcdWorkNumberFourth->value() ;
@@ -698,10 +712,10 @@ void MainWindow::incFourth()
 		}
 	}
 /// <-
-	else  
-*/
+	else  {
 		disableAllButtons();
 		emit axisAdj(controlParams.fourthAxisType, jogStep, invFourth, absoluteAfterAxisAdj, 0);
+	}
 }
 
 void MainWindow::getOptions()
@@ -990,7 +1004,7 @@ void MainWindow::readSettings()
     jogStep = jogStepStr.toFloat();
 
     int indexDesired = 0;
-    QString steps[] = { "0.01", "0.1", "1", "10", "100" };
+    QString steps[] = { "0.01", "0.1", "1", "5", "10", "50", "100" };
     for (unsigned int i = 0; i < (sizeof (steps) / sizeof (steps[0])); i++) {
         ui->comboStep->addItem(steps[i]);
         if (jogStepStr == steps[i]) {

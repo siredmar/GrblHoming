@@ -114,6 +114,7 @@ public slots:
     void sendGrblReset();
     void sendGrblUnlock();
     void goToHome();
+    void sendGrblHoming();
 
 protected:
     void timerEvent(QTimerEvent *event);

@@ -16,6 +16,12 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>440</width>
+    <height>438</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Grbl Settings</string>
   </property>

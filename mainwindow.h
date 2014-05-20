@@ -108,7 +108,10 @@ signals:
     void sendSetHome();
     void sendGrblReset();
     void sendGrblUnlock();
+    void sendGrblHoming();
     void goToHome();
+
+
     void setItems(QList<PosItem>);
 
 private slots:
@@ -157,6 +160,7 @@ private slots:
     void grblUnlock();
     void updateCoordinates(Coord3D machineCoord, Coord3D workCoord);
     void goHomeSafe();
+    void grblHoming();
     void zJogSliderDisplay(int pos);
     void zJogSliderPressed();
     void zJogSliderReleased();
