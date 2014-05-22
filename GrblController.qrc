@@ -6,5 +6,9 @@
         <file>img/right.PNG</file>
         <file>img/up.PNG</file>
         <file>img/zapmaker-logo-130.png</file>
+        <file>img/upright.PNG</file>
+        <file>img/upleft.PNG</file>
+        <file>img/downright.PNG</file>
+        <file>img/downleft.PNG</file>
     </qresource>
 </RCC>

@@ -102,6 +102,7 @@ signals:
     void sendFile(QString path);
     void gotoXYZFourth(QString line);
     void axisAdj(char axis, float coord, bool inv, bool absoluteAfterAxisAdj, int sliderZCount);
+    void axisAdjXY(float coordX, float coordY, bool invX, bool invY,  bool absoluteAfterAxisAdj);
     void setResponseWait(ControlParams controlParams);
     void setProgress(int percent);
     void setRuntime(QString runtime);
@@ -127,6 +128,10 @@ private slots:
     void incX();
     void incY();
     void incZ();
+    void incXincY();
+    void incXdecY();
+    void decXincY();
+    void decXdecY();
     void setHome();
         //manual
     void gotoXYZFourth();

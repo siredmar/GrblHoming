@@ -1795,6 +1795,24 @@ void GCode::axisAdj(char axis, float coord, bool inv, bool absoluteAfterAxisAdj,
     emit adjustedAxis();
 }
 
+void GCode::axisAdjXY(float coordX, float coordY, bool invX, bool invY,  bool absoluteAfterAxisAdj)
+{
+    if (invX)
+    {
+        coordX = (-coordX);
+    }
+    if (invY)
+    {
+        coordY = (-coordY);
+    }
+
+    QString cmd = QString("G01 X").append(QString::number(coordX)).append(QString(" Y")).append(QString::number(coordY));
+
+    SendJog(cmd, absoluteAfterAxisAdj);
+
+    emit adjustedAxis();
+}
+
 bool GCode::SendJog(QString cmd, bool absoluteAfterAxisAdj)
 {
     pollPosWaitForIdle(false);

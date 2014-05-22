@@ -109,6 +109,7 @@ public slots:
     void sendFile(QString path);
     void gotoXYZFourth(QString line);
     void axisAdj(char axis, float coord, bool inv, bool absoluteAfterAxisAdj, int sliderZCount);
+    void axisAdjXY(float coordX, float coordY, bool invX, bool invY,  bool absoluteAfterAxisAdj);
     void setResponseWait(ControlParams controlParams);
     void grblSetHome();
     void sendGrblReset();

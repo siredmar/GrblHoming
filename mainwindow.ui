@@ -593,39 +593,6 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="lblY">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>29</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>52</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>18</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Y</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="1">
          <widget class="QLCDNumber" name="lcdMachNumberX">
           <property name="sizePolicy">
@@ -702,6 +669,39 @@
           </property>
           <property name="segmentStyle">
            <enum>QLCDNumber::Filled</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lblY">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>29</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>52</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>18</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Y</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
@@ -1182,45 +1182,28 @@
              <enum>QLayout::SetDefaultConstraint</enum>
             </property>
             <item>
-             <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0" columnminimumwidth="50,50,50">
+             <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0">
               <property name="sizeConstraint">
                <enum>QLayout::SetMaximumSize</enum>
               </property>
-              <item row="3" column="0">
-               <widget class="QPushButton" name="DecXBtn">
+              <item row="4" column="0">
+               <widget class="QPushButton" name="DecXDecYBtn">
                 <property name="text">
                  <string/>
                 </property>
                 <property name="icon">
                  <iconset resource="GrblController.qrc">
-                  <normaloff>:/img/left.PNG</normaloff>:/img/left.PNG</iconset>
+                  <normaloff>:/img/downleft.PNG</normaloff>:/img/downleft.PNG</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>18</width>
+                  <height>18</height>
                  </size>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="IncYBtn">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="GrblController.qrc">
-                  <normaloff>:/img/up.PNG</normaloff>:/img/up.PNG</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>24</width>
-                  <height>24</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
+              <item row="4" column="1">
                <widget class="QPushButton" name="DecYBtn">
                 <property name="text">
                  <string/>
@@ -1237,37 +1220,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>18</width>
-                  <height>17</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="3" column="2">
-               <widget class="QPushButton" name="IncXBtn">
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="GrblController.qrc">
-                  <normaloff>:/img/right.PNG</normaloff>:/img/right.PNG</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>24</width>
-                  <height>24</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
+              <item row="8" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
                  <widget class="QLabel" name="lblFourthJog">
@@ -1288,7 +1241,7 @@
                 </item>
                </layout>
               </item>
-              <item row="5" column="0">
+              <item row="8" column="0">
                <widget class="QPushButton" name="DecFourthBtn">
                 <property name="text">
                  <string/>
@@ -1305,7 +1258,7 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="2">
+              <item row="8" column="2">
                <widget class="QPushButton" name="IncFourthBtn">
                 <property name="text">
                  <string/>
@@ -1322,7 +1275,7 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
+              <item row="6" column="1">
                <spacer name="verticalSpacer_2">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -1334,6 +1287,134 @@
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item row="1" column="1">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="3" column="1">
+               <spacer name="verticalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="1">
+               <widget class="QPushButton" name="IncYBtn">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="GrblController.qrc">
+                  <normaloff>:/img/up.PNG</normaloff>:/img/up.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QPushButton" name="DecXBtn">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="GrblController.qrc">
+                  <normaloff>:/img/left.PNG</normaloff>:/img/left.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QPushButton" name="IncXBtn">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="GrblController.qrc">
+                  <normaloff>:/img/right.PNG</normaloff>:/img/right.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QPushButton" name="DecXIncYBtn">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="GrblController.qrc">
+                  <normaloff>:/img/upleft.PNG</normaloff>:/img/upleft.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>18</width>
+                  <height>18</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QPushButton" name="IncXDecYBtn">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="GrblController.qrc">
+                  <normaloff>:/img/downright.PNG</normaloff>:/img/downright.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>18</width>
+                  <height>18</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QPushButton" name="IncXIncYBtn">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="GrblController.qrc">
+                  <normaloff>:/img/upright.PNG</normaloff>:/img/upright.PNG</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>18</width>
+                  <height>18</height>
+                 </size>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -1645,7 +1726,7 @@
             <x>10</x>
             <y>10</y>
             <width>161</width>
-            <height>101</height>
+            <height>81</height>
            </rect>
           </property>
           <property name="title">
@@ -1656,6 +1737,9 @@
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
               <widget class="QPushButton" name="btnResetGrbl">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
@@ -1667,19 +1751,6 @@
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QPushButton" name="btnUnlockGrbl">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Unlock Grbl</string>
-               </property>
-              </widget>
-             </item>
             </layout>
            </item>
           </layout>
@@ -1687,8 +1758,8 @@
          <widget class="QPushButton" name="btnGRBL">
           <property name="geometry">
            <rect>
-            <x>180</x>
-            <y>37</y>
+            <x>182</x>
+            <y>38</y>
             <width>131</width>
             <height>41</height>
            </rect>
@@ -1723,7 +1794,7 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>8</pointsize>
+            <pointsize>9</pointsize>
            </font>
           </property>
           <property name="autoFillBackground">
@@ -1756,7 +1827,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Unlock+Homing</string>
+           <string>Homing</string>
           </property>
          </widget>
         </item>
@@ -1764,6 +1835,19 @@
          <widget class="QPushButton" name="pushButtonRefreshPos">
           <property name="text">
            <string>Refresh Pos</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnUnlockGrbl">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Unlock Grbl</string>
           </property>
          </widget>
         </item>

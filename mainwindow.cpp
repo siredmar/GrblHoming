@@ -16,8 +16,8 @@ extern Log4Qt::FileAppender *p_fappender;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-   // open_button_text(tr(OPEN_BUTTON_TEXT)),
-   // close_button_text(tr(CLOSE_BUTTON_TEXT)),
+    // open_button_text(tr(OPEN_BUTTON_TEXT)),
+    // close_button_text(tr(CLOSE_BUTTON_TEXT)),
     open_button_text(tr("Open")),
     close_button_text(tr("Close / Reset")),
     absoluteAfterAxisAdj(false),
@@ -84,6 +84,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->IncXBtn,SIGNAL(clicked()),this,SLOT(incX()));
     connect(ui->IncYBtn,SIGNAL(clicked()),this,SLOT(incY()));
     connect(ui->IncZBtn,SIGNAL(clicked()),this,SLOT(incZ()));
+
+    connect(ui->IncXIncYBtn,SIGNAL(clicked()),this,SLOT(incXincY()));
+    connect(ui->IncXDecYBtn,SIGNAL(clicked()),this,SLOT(incXdecY()));
+    connect(ui->DecXIncYBtn,SIGNAL(clicked()),this,SLOT(decXincY()));
+    connect(ui->DecXDecYBtn,SIGNAL(clicked()),this,SLOT(decXdecY()));
+
     connect(ui->DecFourthBtn,SIGNAL(clicked()),this,SLOT(decFourth()));
     connect(ui->IncFourthBtn,SIGNAL(clicked()),this,SLOT(incFourth()));
     connect(ui->btnSetHome,SIGNAL(clicked()),this,SLOT(setHome()));
@@ -112,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(sendGcode(QString)), &gcode, SLOT(sendGcode(QString)));
     connect(this, SIGNAL(gotoXYZFourth(QString)), &gcode, SLOT(gotoXYZFourth(QString)));
     connect(this, SIGNAL(axisAdj(char, float, bool, bool, int)), &gcode, SLOT(axisAdj(char, float, bool, bool, int)));
+    connect(this, SIGNAL(axisAdjXY(float, float, bool, bool, bool)), &gcode, SLOT(axisAdjXY(float, float, bool, bool, bool)));
     connect(this, SIGNAL(setResponseWait(ControlParams)), &gcode, SLOT(setResponseWait(ControlParams)));
     connect(this, SIGNAL(shutdown()), &gcodeThread, SLOT(quit()));
     connect(this, SIGNAL(shutdown()), &runtimeTimerThread, SLOT(quit()));
@@ -151,7 +158,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // This code generates too many messages and chokes operation on raspberry pi. Do not use.
     //connect(ui->statusList->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)), ui->statusList, SLOT(scrollToBottom()));
 
-	// instead, use this one second timer-based approach
+    // instead, use this one second timer-based approach
     scrollTimer = new QTimer(this);
     connect(scrollTimer, SIGNAL(timeout()), this, SLOT(doScroll()));
     scrollTimer->start(1000);
@@ -161,10 +168,10 @@ MainWindow::MainWindow(QWidget *parent) :
     runtimeTimerThread.start();
     gcodeThread.start();
 
-	// Don't use - it will not show horizontal scrollbar for small app size
+    // Don't use - it will not show horizontal scrollbar for small app size
     //ui->statusList->setUniformItemSizes(true);
 
-	// Does not work correctly for horizontal scrollbar:
+    // Does not work correctly for horizontal scrollbar:
     //MyItemDelegate *scrollDelegate = new MyItemDelegate(ui->statusList);
     //scrollDelegate->setWidth(600);
     //ui->statusList->setItemDelegate(scrollDelegate);
@@ -266,14 +273,14 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         QMessageBox msgBox;
         msgBox.setText(tr("You appear to have upgraded to the latest version of Grbl Controller. "
-                       "Please be aware that as of version 3.4 the default behavior of sending commands "
-                       "to Grbl has been changed to send them as fast as possible (Aggressive preload mode).\n\n"
-                       "Your settings have been changed to enable this mode. Why? Because it provides the most "
-                       "optimal use of Grbl and greatly reduces the time to finish a typical job.\n\n"
-                       "What does this mean to you? "
-                       "Arc commands will now run smoother and faster than before, which may "
-                       "cause your spindle to work slightly harder, so please run some tests first. "
-                       "Alternately, go to the Options dialog and manually disable Aggressive Preload") );
+                          "Please be aware that as of version 3.4 the default behavior of sending commands "
+                          "to Grbl has been changed to send them as fast as possible (Aggressive preload mode).\n\n"
+                          "Your settings have been changed to enable this mode. Why? Because it provides the most "
+                          "optimal use of Grbl and greatly reduces the time to finish a typical job.\n\n"
+                          "What does this mean to you? "
+                          "Arc commands will now run smoother and faster than before, which may "
+                          "cause your spindle to work slightly harder, so please run some tests first. "
+                          "Alternately, go to the Options dialog and manually disable Aggressive Preload") );
         msgBox.exec();
 
         controlParams.useAggressivePreload = true;
@@ -319,7 +326,7 @@ void MainWindow::begin()
     resetProgress();
     int ret = QMessageBox::No;
     if((ui->lcdWorkNumberX->value()!=0)||(ui->lcdWorkNumberY->value()!=0)||(ui->lcdWorkNumberZ->value()!=0)
-        || (ui->lcdWorkNumberFourth->value()!=0))
+            || (ui->lcdWorkNumberFourth->value()!=0))
     {
         QMessageBox msgBox;
         msgBox.setText(tr("Do you want to zero the displayed position before proceeding?"));
@@ -424,7 +431,7 @@ void MainWindow::stopSending()
 // User has asked to open the port
 void MainWindow::openPort()
 {
-	QString Mes = tr("User clicked Port Open/Close");
+    QString Mes = tr("User clicked Port Open/Close");
     info(qPrintable(Mes) );
 
     openPortCtl(false);
@@ -674,48 +681,74 @@ void MainWindow::decZ()
     emit axisAdj('Z', -jogStep, invZ, absoluteAfterAxisAdj, sliderZCount++);
 }
 
+void MainWindow::incXincY()
+{
+    disableAllButtons();
+    emit axisAdjXY(jogStep, jogStep, invX, invY, absoluteAfterAxisAdj);
+}
+
+void MainWindow::incXdecY()
+{
+    disableAllButtons();
+    emit axisAdjXY(jogStep, -jogStep, invX, invY, absoluteAfterAxisAdj);
+}
+
+void MainWindow::decXincY()
+{
+    disableAllButtons();
+    emit axisAdjXY(-jogStep, jogStep, invX, invY, absoluteAfterAxisAdj);
+}
+
+void MainWindow::decXdecY()
+{
+    disableAllButtons();
+    emit axisAdjXY(-jogStep, -jogStep, invX, invY, absoluteAfterAxisAdj);
+}
+
+
+
 void MainWindow::decFourth()
 {
-/// LETARTARE 25-04-2014
-	char four = controlParams.fourthAxisType;
-	if (four == FOURTH_AXIS_A || four == FOURTH_AXIS_B || four == FOURTH_AXIS_C) {
-		float actual_position = ui->lcdWorkNumberFourth->value() ;
-		if (actual_position >= -360.0 + jogStep ) {
-			disableAllButtons();
-			emit axisAdj(controlParams.fourthAxisType, -jogStep, invFourth, absoluteAfterAxisAdj, 0);
-		}
-		else  {
-			ui->DecFourthBtn->setEnabled(false) ;
-			ui->IncFourthBtn->setEnabled(true) ;
-		}
-	}
-/// <--
-	else  {
-		disableAllButtons();
-		emit axisAdj(controlParams.fourthAxisType, -jogStep, invFourth, absoluteAfterAxisAdj, 0);
-	}
+    /// LETARTARE 25-04-2014
+    char four = controlParams.fourthAxisType;
+    if (four == FOURTH_AXIS_A || four == FOURTH_AXIS_B || four == FOURTH_AXIS_C) {
+        float actual_position = ui->lcdWorkNumberFourth->value() ;
+        if (actual_position >= -360.0 + jogStep ) {
+            disableAllButtons();
+            emit axisAdj(controlParams.fourthAxisType, -jogStep, invFourth, absoluteAfterAxisAdj, 0);
+        }
+        else  {
+            ui->DecFourthBtn->setEnabled(false) ;
+            ui->IncFourthBtn->setEnabled(true) ;
+        }
+    }
+    /// <--
+    else  {
+        disableAllButtons();
+        emit axisAdj(controlParams.fourthAxisType, -jogStep, invFourth, absoluteAfterAxisAdj, 0);
+    }
 
 }
 void MainWindow::incFourth()
 {
-/// LETARTARE 25-04-2014
-	char four = controlParams.fourthAxisType;
-	if (four == FOURTH_AXIS_A || four == FOURTH_AXIS_B || four == FOURTH_AXIS_C) {
-		float actual_position = ui->lcdWorkNumberFourth->value() ;
-		if (actual_position <= 360.0 - jogStep ) {
-			disableAllButtons();
-			emit axisAdj(controlParams.fourthAxisType, jogStep, invFourth, absoluteAfterAxisAdj, 0);
-		}
-		else {
-			ui->DecFourthBtn->setEnabled(true) ;
-			ui->IncFourthBtn->setEnabled(false) ;
-		}
-	}
-/// <-
-	else  {
-		disableAllButtons();
-		emit axisAdj(controlParams.fourthAxisType, jogStep, invFourth, absoluteAfterAxisAdj, 0);
-	}
+    /// LETARTARE 25-04-2014
+    char four = controlParams.fourthAxisType;
+    if (four == FOURTH_AXIS_A || four == FOURTH_AXIS_B || four == FOURTH_AXIS_C) {
+        float actual_position = ui->lcdWorkNumberFourth->value() ;
+        if (actual_position <= 360.0 - jogStep ) {
+            disableAllButtons();
+            emit axisAdj(controlParams.fourthAxisType, jogStep, invFourth, absoluteAfterAxisAdj, 0);
+        }
+        else {
+            ui->DecFourthBtn->setEnabled(true) ;
+            ui->IncFourthBtn->setEnabled(false) ;
+        }
+    }
+    /// <-
+    else  {
+        disableAllButtons();
+        emit axisAdj(controlParams.fourthAxisType, jogStep, invFourth, absoluteAfterAxisAdj, 0);
+    }
 }
 
 void MainWindow::getOptions()
@@ -1374,7 +1407,7 @@ void MainWindow::updateCoordinates(Coord3D machineCoord, Coord3D workCoord)
     ui->lblFourthJog->setEnabled(controlParams.useFourAxis);
     machineCoordinates = machineCoord;
     workCoordinates = workCoord;
-/*
+    /*
     if (workCoordinates.stoppedZ == false)
     {
         int newPos = workCoordinates.z + sliderTo;
@@ -1399,11 +1432,11 @@ void MainWindow::refreshLcd()
     if (controlParams.useFourAxis) {
         lcdDisplay(controlParams.fourthAxisType, true, workCoordinates.fourth);
         lcdDisplay(controlParams.fourthAxisType, false, machineCoordinates.fourth);
-	}
-	else {
+    }
+    else {
         lcdDisplay(controlParams.fourthAxisType, true, 0);
         lcdDisplay(controlParams.fourthAxisType, false, 0);
-	}
+    }
 }
 
 void MainWindow::lcdDisplay(char axis, bool workCoord, float floatVal)
@@ -1431,10 +1464,10 @@ void MainWindow::lcdDisplay(char axis, bool workCoord, float floatVal)
         break;
     default:
         if (axis == FOURTH_AXIS_A || axis == FOURTH_AXIS_B || axis == FOURTH_AXIS_C
-///  LETARTARE
-			|| axis == FOURTH_AXIS_U || axis == FOURTH_AXIS_V || axis == FOURTH_AXIS_W
-/// <-
-			)
+                ///  LETARTARE
+                || axis == FOURTH_AXIS_U || axis == FOURTH_AXIS_V || axis == FOURTH_AXIS_W
+                /// <-
+                )
         {
             if (workCoord)
                 ui->lcdWorkNumberFourth->display(value);
@@ -1552,44 +1585,44 @@ void MainWindow::setQueuedCommands(int commandCount, bool running)
     {
         switch (queuedCommandState)
         {
-            case QCS_OK:
-                if (lastQueueCount == 0)
+        case QCS_OK:
+            if (lastQueueCount == 0)
+            {
+                if (queuedCommandsEmptyTimer.elapsed() > 2000)
                 {
-                    if (queuedCommandsEmptyTimer.elapsed() > 2000)
+                    if (!queuedCommandsStarved)
                     {
-                        if (!queuedCommandsStarved)
-                        {
-                            //diag("DG >>>>Switch to red\n");
+                        //diag("DG >>>>Switch to red\n");
 
-                            queuedCommandsStarved = true;
+                        queuedCommandsStarved = true;
 
-                            ui->labelQueuedCommands->setStyleSheet("QLabel { background-color : rgb(255,0,0); color : white; }");
+                        ui->labelQueuedCommands->setStyleSheet("QLabel { background-color : rgb(255,0,0); color : white; }");
 
-                            queuedCommandState = QCS_WAITING_FOR_ITEMS;
-                        }
+                        queuedCommandState = QCS_WAITING_FOR_ITEMS;
                     }
                 }
-                break;
-             case QCS_WAITING_FOR_ITEMS:
-                if (commandCount > 0)
+            }
+            break;
+        case QCS_WAITING_FOR_ITEMS:
+            if (commandCount > 0)
+            {
+                if (queuedCommandsEmptyTimer.elapsed() > 3000)
                 {
-                    if (queuedCommandsEmptyTimer.elapsed() > 3000)
+                    if (queuedCommandsStarved)
                     {
-                        if (queuedCommandsStarved)
-                        {
-                            //diag("DG >>>>Switch to green\n");
+                        //diag("DG >>>>Switch to green\n");
 
-                            queuedCommandsStarved = false;
+                        queuedCommandsStarved = false;
 
-                            ui->labelQueuedCommands->setStyleSheet("");
-                        }
-
-                        queuedCommandsEmptyTimer.restart();
-
-                        queuedCommandState = QCS_OK;
+                        ui->labelQueuedCommands->setStyleSheet("");
                     }
+
+                    queuedCommandsEmptyTimer.restart();
+
+                    queuedCommandState = QCS_OK;
                 }
-                break;
+            }
+            break;
         }
 
         if (queuedCommandsRefreshTimer.elapsed() > 1000)
